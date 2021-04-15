@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "881701324351",
+    "project_id": "tip-learning",
+    "storage_bucket": "tip-learning.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:881701324351:android:4c4769dfdb90c514329a8a",
+        "android_client_info": {
+          "package_name": "com.christianas.tiplearning"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "881701324351-7vkaehl33sb7oggejautfaq66l62hpan.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB4T9FPbr5hY8rcf4VVitKpZFhNXDcKQwI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "881701324351-7vkaehl33sb7oggejautfaq66l62hpan.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:title="Basket"
+        android:icon="@drawable/ic_baseline_add_shopping_cart_24"
+        android:id="@+id/basket"/>
+
+    <item
+        android:title="Pay Now"
+        android:icon="@drawable/ic_baseline_payment_24"
+        android:id="@+id/payNow"/>
+
+    <item
+        android:title="Code"
+        android:icon="@drawable/ic_baseline_vpn_key_24"
+        android:id="@+id/code"/>
+</menu>

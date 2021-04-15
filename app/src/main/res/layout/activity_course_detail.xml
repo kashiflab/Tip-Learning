@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/mainLayout"
+    tools:context=".Activities.CourseDetailActivity">
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        app:titleTextColor="@color/white"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <ScrollView
+        android:layout_below="@id/toolbar"
+        android:padding="10dp"
+        android:id="@+id/scrollView2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/bottomBar">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:context=".Activities.CourseDetailActivity">
+
+        <ImageView
+            android:id="@+id/courseImage"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:src="@color/blue"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:fontFamily="sans-serif-medium"
+            android:text="Dummy Title"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/courseImage" />
+
+        <TextView
+            android:id="@+id/price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:fontFamily="sans-serif-medium"
+            android:text="200$"
+            android:textColor="@color/lime"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/courseImage" />
+
+        <TextView
+            android:id="@+id/short_desc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:fontFamily="sans-serif-medium"
+            android:text="Desc"
+            android:textSize="13sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/title" />
+
+        <TextView
+            android:id="@+id/long_desc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:fontFamily="sans-serif-medium"
+            android:text="Desc"
+            android:textSize="13sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/short_desc" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/videoCard"
+                app:layout_constraintTop_toBottomOf="@id/long_desc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:background="#fafafa"
+                    android:padding="10dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/video"
+                        android:src="@drawable/ic_baseline_play_arrow_24"
+                        app:civ_border_color="@color/black"
+                        app:civ_border_width="1dp"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:paddingStart="10dp"
+                        android:text="Demo Video"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/video"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.cardview.widget.CardView>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
+    <me.ibrahimsn.lib.SmoothBottomBar
+        android:layout_alignParentBottom="true"
+        android:id="@+id/bottomBar"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        app:backgroundColor="@color/royal_blue"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:menu="@menu/detail_bottom_bar_menu" />
+
+<!--    <LinearLayout-->
+<!--        android:orientation="horizontal"-->
+<!--        android:weightSum="3"-->
+<!--        android:id="@+id/payNowLayout"-->
+<!--        android:layout_alignParentBottom="true"-->
+<!--        android:background="@color/royal_blue"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="50dp">-->
+
+<!--        <Button-->
+<!--            android:fontFamily="sans-serif-light"-->
+<!--            app:backgroundTint="@null"-->
+<!--            android:layout_weight="1"-->
+<!--            android:id="@+id/basket"-->
+<!--            android:textSize="13sp"-->
+<!--            android:background="@android:color/transparent"-->
+<!--            android:text="Add to Basket"-->
+<!--            android:textAllCaps="false"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="match_parent"/>-->
+
+<!--        <Button-->
+<!--            android:fontFamily="sans-serif-light"-->
+<!--            android:textSize="13sp"-->
+<!--            android:layout_weight="1"-->
+<!--            android:id="@+id/payNow"-->
+<!--            app:backgroundTint="@null"-->
+<!--            android:text="Pay Now"-->
+<!--            android:background="@android:color/transparent"-->
+<!--            android:textAllCaps="false"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="match_parent"/>-->
+<!--        <Button-->
+<!--            android:fontFamily="sans-serif-light"-->
+<!--            android:textSize="13sp"-->
+<!--            app:backgroundTint="@null"-->
+<!--            android:layout_weight="1"-->
+<!--            android:id="@+id/code"-->
+<!--            android:background="@android:color/transparent"-->
+<!--            android:text="Enter Code"-->
+<!--            android:textAllCaps="false"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_height="match_parent"/>-->
+
+<!--    </LinearLayout>-->
+
+</RelativeLayout>
