@@ -136,8 +136,15 @@ public class SignUpActivity extends AppCompatActivity {
                             });
 
                 }else{
-                    Utils.showSnackBar(binding.mainLayout,"Some error occurred");
+                    Utils.hidepDialog();
+                    Utils.showSnackBar(binding.mainLayout,"Credentitals Already exists");
                 }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Utils.hidepDialog();
+                Log.i(TAG,"Some error occurred");
             }
         });
 
