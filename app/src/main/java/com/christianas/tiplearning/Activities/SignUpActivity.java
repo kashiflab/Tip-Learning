@@ -107,6 +107,7 @@ public class SignUpActivity extends AppCompatActivity {
                     user.put("price","");
                     user.put("currency","");
                     user.put("isSubscribed",false);
+                    user.put("subscriptionCode","");
 
                     firestore.collection("users")
                             .document(uid)

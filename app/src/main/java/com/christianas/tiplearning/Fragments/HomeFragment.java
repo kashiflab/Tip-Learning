@@ -50,6 +50,7 @@ public class HomeFragment extends Fragment {
     private FirebaseAuth auth;
 
     private MainViewModel mainViewModel;
+    private User user;
 
 
     @Override
@@ -75,6 +76,7 @@ public class HomeFragment extends Fragment {
         mainViewModel.getSubscriptionLive().observe(getViewLifecycleOwner(), new Observer<List<User>>() {
             @Override
             public void onChanged(List<User> users) {
+                user = users.get(0);
                 binding.username.setText(users.get(0).getFirst_name());
                 binding.email.setText(users.get(0).getEmail());
 
@@ -103,7 +105,8 @@ public class HomeFragment extends Fragment {
 
                     Utils.showSnackBar(binding.mainLayout, "Already Subscribed");
                 } else {
-                    startActivity(new Intent(getActivity(), SubscriptionActivity.class));
+                    startActivity(new Intent(getActivity(), SubscriptionActivity.class)
+                    .putExtra("email",user.getEmail()));
                 }
             }
         });
@@ -174,6 +177,7 @@ public class HomeFragment extends Fragment {
                 map.put("price", "");
                 map.put("currency", "");
                 map.put("isSubscribed", false);
+                map.put("subscriptionCode", "");
 
                 FirebaseFirestore firestore = FirebaseFirestore.getInstance();
                 firestore.collection("users").document(auth.getCurrentUser().getUid())
@@ -214,6 +218,7 @@ public class HomeFragment extends Fragment {
         }
 
     }
+
     /**
      * Get a diff between two dates
      *

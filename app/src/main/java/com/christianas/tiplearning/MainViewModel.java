@@ -165,7 +165,7 @@ public class MainViewModel extends ViewModel {
                                 snapshot.getString("startDate"),
                                 snapshot.getString("endDate"),snapshot.getString("type"),
                                 snapshot.getString("price"),snapshot.getString("currency"),
-                                snapshot.getBoolean("isSubscribed")));
+                                snapshot.getBoolean("isSubscribed"),snapshot.getString("subscriptionCode")));
 //                        }
                         subscriptionLive.setValue(subscription);
                         Log.d("TAG", snapshot.getString("first_name")); //Print the name

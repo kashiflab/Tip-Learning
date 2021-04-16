@@ -60,6 +60,7 @@ public class SubscriptionActivity extends AppCompatActivity {
     private String userId;
     private APIService apiService;
     private String type, price;
+    private String email;
 
     private static PayPalConfiguration payPalConfiguration = new PayPalConfiguration()
             .environment(PayPalConfiguration.ENVIRONMENT_SANDBOX)
@@ -74,6 +75,8 @@ public class SubscriptionActivity extends AppCompatActivity {
         binding.toolbar.setTitle("Subscription");
         setSupportActionBar(binding.toolbar);
 
+        email = getIntent().getStringExtra("email");
+
         apiService = ApiUtils.getAPIService();
         auth = FirebaseAuth.getInstance();
         firestore = FirebaseFirestore.getInstance();
@@ -81,28 +84,20 @@ public class SubscriptionActivity extends AppCompatActivity {
 
         startPayPalService();
 
-        binding.weekly.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                type = "weekly";
-                price = "100";
-                payPalPayment();
-            }
-        });
         binding.monthly.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                type = "monthly";
+                type = "Monthly";
                 price = "150";
-                setSubscription("monthly","150");
+                payPalPayment();
             }
         });
         binding.yearly.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                type = "yearly";
+                type = "Yearly";
                 price = "200";
-                setSubscription("yearly","200");
+                payPalPayment();
             }
         });
     }
@@ -142,14 +137,14 @@ public class SubscriptionActivity extends AppCompatActivity {
         map.put("type",type);
         map.put("price",price);
         map.put("currency","usd");
-        map.put("isSubscribed",true);
+        map.put("subscriptionCode","");
 
         firestore.collection("users").document(userId).update(map)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if(task.isSuccessful()){
-                    showDialog();
+                    sendEmail(email);
                 }else{
                     Toast.makeText(SubscriptionActivity.this, "Not Subscribed", Toast.LENGTH_SHORT).show();
                 }
@@ -159,6 +154,45 @@ public class SubscriptionActivity extends AppCompatActivity {
 
     }
 
+
+    private void saveCode(String code){
+        Map<String, Object> map = new HashMap<>();
+        map.put("subscriptionCode",code);
+        firestore.collection("users").document(auth.getCurrentUser().getUid())
+                .update(map).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if(task.isSuccessful()){
+                    Log.i(TAG,"code saved");
+                }
+            }
+        });
+    }
+
+    private void sendEmail(String email){
+        apiService.sendEmail(email,"All Videos").enqueue(new Callback<Api>() {
+            @Override
+            public void onResponse(Call<Api> call, Response<Api> response) {
+                Utils.hidepDialog();
+                if(response.isSuccessful()){
+                    if(response.body().getAction().equals("false")){
+                        showDialog(email);
+                        saveCode(response.body().getCode());
+                    }else{
+                        Toast.makeText(SubscriptionActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                }else{
+                    Toast.makeText(SubscriptionActivity.this, "Some error occurred", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Api> call, Throwable t) {
+                Utils.hidepDialog();
+                Toast.makeText(SubscriptionActivity.this, "No Internet", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 
     private void startPayPalService() {
         Intent intent = new Intent(this, PayPalService.class);
@@ -191,7 +225,6 @@ public class SubscriptionActivity extends AppCompatActivity {
                         String created_at = confirmation.toJSONObject().getJSONObject("response").getString("create_time");
                         String id = confirmation.toJSONObject().getJSONObject("response").getString("id");
                         if(state.equals("approved")) {
-
                             Utils.initpDialog(this,"Please wait...");
                             Utils.showpDialog();
                             setSubscription(type,price);
@@ -210,17 +243,14 @@ public class SubscriptionActivity extends AppCompatActivity {
             Toast.makeText(this, "Invalid", Toast.LENGTH_SHORT).show();
     }
 
-
-    private void showDialog(){
-        Utils.hidepDialog();
+    private void showDialog(String email){
         new SweetAlertDialog(this, SweetAlertDialog.SUCCESS_TYPE)
-                .setTitleText("Subscribed")
-                .setContentText("You have successfully subscribed.")
+                .setTitleText("Email Sent")
+                .setContentText("4 digit code is sent to your registered email:"+email+"\nPlease check your email.")
                 .setConfirmText("Okay")
                 .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                     @Override
                     public void onClick(SweetAlertDialog sDialog) {
-                        SubscriptionActivity.super.onBackPressed();
                         sDialog.dismissWithAnimation();
                     }
                 })

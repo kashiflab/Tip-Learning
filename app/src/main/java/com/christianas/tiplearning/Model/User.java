@@ -11,13 +11,19 @@ public class User {
     public String getId() {
         return id;
     }
+    @SerializedName("subscriptionCode")
+    private String subscriptionCode;
+
+    public String getSubscriptionCode() {
+        return subscriptionCode;
+    }
 
     public boolean isSubscribed() {
         return isSubscribed;
     }
 
     public User(String id, String first_name, String last_name, String email, String created_at, String startDate,
-                String endDate, String type, String price, String currency, boolean isSubscribed) {
+                String endDate, String type, String price, String currency, boolean isSubscribed, String subscriptionCode) {
         this.id = id;
         this.first_name = first_name;
         this.last_name = last_name;
@@ -29,6 +35,7 @@ public class User {
         this.price = price;
         this.currency = currency;
         this.isSubscribed = isSubscribed;
+        this.subscriptionCode = subscriptionCode;
     }
 
     @SerializedName("first_name")

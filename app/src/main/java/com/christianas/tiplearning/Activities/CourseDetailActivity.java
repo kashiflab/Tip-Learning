@@ -25,6 +25,7 @@ import com.christianas.tiplearning.MainViewModel;
 import com.christianas.tiplearning.Model.Api;
 import com.christianas.tiplearning.Model.Course;
 import com.christianas.tiplearning.Model.PurchasedCourse;
+import com.christianas.tiplearning.Model.User;
 import com.christianas.tiplearning.R;
 import com.christianas.tiplearning.Utils.ApiUtils;
 import com.christianas.tiplearning.Utils.Utils;
@@ -57,6 +58,7 @@ import java.util.Map;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import io.grpc.okhttp.internal.Util;
+import me.ibrahimsn.lib.OnItemReselectedListener;
 import me.ibrahimsn.lib.OnItemSelectedListener;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -83,6 +85,8 @@ public class CourseDetailActivity extends AppCompatActivity {
     private String purchasedCode="", purchasedId = "";
 
     private boolean isSubscribed = false, isPurchased = false;
+
+    private User user;
 
     private static PayPalConfiguration payPalConfiguration = new PayPalConfiguration()
             .environment(PayPalConfiguration.ENVIRONMENT_SANDBOX)
@@ -192,6 +196,46 @@ public class CourseDetailActivity extends AppCompatActivity {
             }
         });
 
+        mainViewModel.getSubscriptionLive().observe(this, new Observer<List<User>>() {
+            @Override
+            public void onChanged(List<User> users) {
+                user = users.get(0);
+            }
+        });
+
+        binding.bottomBar.setSelected(false);
+        binding.bottomBar.setOnItemReselectedListener(new OnItemReselectedListener() {
+            @Override
+            public void onItemReselect(int i) {
+                switch (i){
+                    case 0:
+                        if(isEmailVerified) {
+                            if (basket.contains(courseId)) {
+                                Utils.showSnackBar(binding.mainLayout, "Already added");
+                            } else {
+                                addToBasket();
+                            }
+                        }else{
+                            Utils.showSnackBar(binding.mainLayout,"Please verify your email");
+                        }
+                        break;
+                    case 1:
+                        if(isEmailVerified) {
+                            payPalPayment();
+                        }else{
+                            Utils.showSnackBar(binding.mainLayout,"Please verify your email");
+                        }
+                        break;
+                    case 2:
+                        if(isEmailVerified) {
+                            showCustomDialog();
+                        }else{
+                            Utils.showSnackBar(binding.mainLayout,"Please verify your email");
+                        }
+                        break;
+                }
+            }
+        });
 
         binding.bottomBar.setOnItemSelectedListener(new OnItemSelectedListener() {
             @Override
@@ -280,13 +324,35 @@ public class CourseDetailActivity extends AppCompatActivity {
     }
 
     private void checkCode(String code) {
-        if(purchasedCode.equals(code)){
+        if(purchasedCode.equals(code) || user.getSubscriptionCode().equals(code)){
             Utils.initpDialog(this,"Please wait...");
             Utils.showpDialog();
-            updateFirestorePurchasedStatus();
+            if(user.getSubscriptionCode().isEmpty()) {
+                updateFirestorePurchasedStatus();
+            }else if(purchasedCode.isEmpty()){
+                setSubscribed();
+            }
         }else{
             Toast.makeText(CourseDetailActivity.this, "Invalid Code", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void setSubscribed() {
+        Map<String,Object> map = new HashMap<>();
+        map.put("isSubscribed",true);
+        firestore.collection("users").document(auth.getCurrentUser().getUid())
+                .update(map).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                Utils.hidepDialog();
+                if(task.isSuccessful()){
+                    binding.bottomBar.setVisibility(View.GONE);
+                    Utils.showSnackBar(binding.mainLayout,"Successfully Unlocked");
+                }else{
+                    Utils.showSnackBar(binding.mainLayout,"Some error occurred");
+                }
+            }
+        });
     }
 
     private void updateFirestorePurchasedStatus() {
