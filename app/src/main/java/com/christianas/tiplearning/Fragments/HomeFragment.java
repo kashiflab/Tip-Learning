@@ -69,7 +69,8 @@ public class HomeFragment extends Fragment {
         binding.materialCardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(getActivity(), BasketActivity.class));
+                startActivity(new Intent(getActivity(), BasketActivity.class)
+                .putExtra("email",user.getEmail()));
             }
         });
 

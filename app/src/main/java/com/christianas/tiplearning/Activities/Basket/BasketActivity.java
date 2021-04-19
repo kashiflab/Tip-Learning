@@ -68,6 +68,8 @@ public class BasketActivity extends AppCompatActivity {
 
     private String email;
 
+    private List<Basket> basket = new ArrayList<>();
+
     private FirebaseFirestore firestore;
     private FirebaseAuth auth;
     private String userId;
@@ -105,6 +107,7 @@ public class BasketActivity extends AppCompatActivity {
             @Override
             public void onChanged(List<Basket> baskets) {
                 adapter.setBasket(baskets);
+                basket = baskets;
             }
         });
 
@@ -223,6 +226,7 @@ public class BasketActivity extends AppCompatActivity {
                 .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                     @Override
                     public void onClick(SweetAlertDialog sDialog) {
+                        emptyBasket();
                         sDialog.dismissWithAnimation();
                     }
                 })
@@ -245,13 +249,16 @@ public class BasketActivity extends AppCompatActivity {
     }
 
     private void sendEmail(String id,int size,String courseName){
+        Log.i(TAG,"Sending email to: "+email);
         apiService.sendEmail(email,courseName).enqueue(new Callback<Api>() {
             @Override
             public void onResponse(Call<Api> call, Response<Api> response) {
                 Utils.hidepDialog();
                 if(response.isSuccessful()){
                     if(response.body().getAction().equals("false")){
-                        if(size==totalSize) {
+                        Log.i(TAG,"Email sent");
+                        Log.i(TAG,"Size: "+size+", TotalSize: "+ totalSize);
+                        if(size+1==totalSize) {
                             showDialog();
                         }
                         saveCode(id, response.body().getCode());
@@ -271,6 +278,29 @@ public class BasketActivity extends AppCompatActivity {
             }
         });
     }
+
+    private void emptyBasket(){
+        for(Basket basket1:basket) {
+            FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+            firestore.collection("users").document(auth.getCurrentUser().getUid()).collection("basket")
+                    .document(basket1.getId()).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if (task.isSuccessful()) {
+                        List<Course> courses = new ArrayList<>();
+                        basket = new ArrayList<>();
+                        adapter.setCourses(courses);
+                        adapter.setBasket(basket);
+
+                        Log.i(TAG,"Removed");
+                    }else{
+                        Log.i(TAG,"Not Removed");
+                    }
+                }
+            });
+        }
+    }
+
     private void startPayPalService() {
         Intent intent = new Intent(this,PayPalService.class);
         intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION,payPalConfiguration);
