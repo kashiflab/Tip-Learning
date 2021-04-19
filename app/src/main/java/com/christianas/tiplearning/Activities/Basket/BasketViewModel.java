@@ -31,6 +31,11 @@ public class BasketViewModel extends ViewModel {
     private FirebaseAuth auth;
 
     private List<Basket> baskets;
+    private MutableLiveData<List<Basket>> liveBasket;
+
+    public MutableLiveData<List<Basket>> getBasket(){
+        return liveBasket;
+    }
 
     private String TAG = "BasketViewModel";
 
@@ -38,6 +43,7 @@ public class BasketViewModel extends ViewModel {
         auth = FirebaseAuth.getInstance();
         firestore = FirebaseFirestore.getInstance();
 
+        liveBasket = new MutableLiveData<>();
         baskets = new ArrayList<>();
 
         course = new MutableLiveData<>();
@@ -56,6 +62,7 @@ public class BasketViewModel extends ViewModel {
                 for(DocumentSnapshot snapshot: queryDocumentSnapshots.getDocuments()){
                     baskets.add(new Basket(snapshot.getId(),snapshot.getString("course_id")));
                 }
+                liveBasket.setValue(baskets);
                 getCourses();
             }
         }).addOnFailureListener(new OnFailureListener() {

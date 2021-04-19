@@ -101,18 +101,26 @@ public class BasketActivity extends AppCompatActivity {
         adapter = new BasketAdapter(this);
         binding.basketRV.setAdapter(adapter);
 
+        basketViewModel.getBasket().observe(this, new Observer<List<Basket>>() {
+            @Override
+            public void onChanged(List<Basket> baskets) {
+                adapter.setBasket(baskets);
+            }
+        });
+
         basketViewModel.getBasketCourse().observe(this, new Observer<List<Course>>() {
             @Override
             public void onChanged(List<Course> courses) {
                 coursesList = courses;
                 adapter.setCourses(courses);
                 totalSize = courses.size();
-                for(Course course:courses){
+                for(Course course:courses) {
                     subTotal += Integer.parseInt(course.getPrice());
 
                 }
+                binding.subTotalPrice.setText(String.valueOf(subTotal));
                 total = subTotal + tax;
-                binding.total.setText(String.valueOf(total));
+                binding.totalPrice.setText(String.valueOf(total));
             }
         });
 

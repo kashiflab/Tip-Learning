@@ -15,6 +15,10 @@ import com.christianas.tiplearning.Fragments.TutorialsFragment;
 import com.christianas.tiplearning.R;
 import com.christianas.tiplearning.databinding.ActivityMainBinding;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import me.ibrahimsn.lib.OnItemSelectedListener;
 
@@ -61,4 +65,20 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
+
+//    public void setUser(){
+//        FirebaseAuth auth = FirebaseAuth.getInstance();
+//        FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+//        Map<String,Object> user = new HashMap<>();
+//        user.put("startDate","");
+//        user.put("endDate","");
+//        user.put("type","");
+//        user.put("price","");
+//        user.put("currency","");
+//        user.put("isSubscribed",false);
+//        user.put("subscriptionCode","");
+//        firestore.collection("users").document(auth.getCurrentUser().getUid())
+//                .update(user);
+//    }
+
 }
